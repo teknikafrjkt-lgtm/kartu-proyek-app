@@ -1,6 +1,6 @@
 // Service worker: hanya menyimpan "kulit" aplikasi (halaman ini + ikon) supaya bisa dipasang
 // dan tampil cepat. Data proyek TIDAK disimpan; selalu diambil langsung dari Apps Script.
-const CACHE = 'kp-shell-v3';
+const CACHE = 'kp-shell-v4';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/maskable-512.png', './icons/apple-touch-icon.png'];
 
 self.addEventListener('install', e => {

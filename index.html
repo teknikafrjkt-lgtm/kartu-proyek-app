@@ -15,37 +15,38 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>
   html,body{margin:0;height:100%;background:#F3F5F7;font:14px/1.5 system-ui,"Segoe UI",Roboto,Arial,sans-serif;color:#1A2230}
-  #app{position:fixed;inset:0;width:100%;height:100%;border:0;display:block;
-       padding:env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);box-sizing:border-box;background:#F3F5F7}
-  #splash,#offline{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px}
-  #splash img,#offline img{width:72px;height:72px}
-  #offline{display:none;background:#F3F5F7}
+  .layar{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px}
+  .layar img{width:72px;height:72px}
+  #offline{display:none}
   #offline b{font-size:17px}
-  #offline button{border:0;background:#496570;color:#fff;font:inherit;font-weight:600;padding:9px 18px;border-radius:6px;cursor:pointer}
+  .btn{border:0;background:#496570;color:#fff;font:inherit;font-weight:600;padding:10px 18px;border-radius:6px;cursor:pointer;text-decoration:none;display:inline-block}
   .bar{width:120px;height:4px;border-radius:2px;background:#D9DEE5;overflow:hidden}
   .bar i{display:block;width:40%;height:100%;background:#496570;animation:b 1.1s ease-in-out infinite}
   @keyframes b{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}
   @media (prefers-reduced-motion:reduce){.bar i{animation:none;width:100%}}
+  .kecil{font-size:12.5px;color:#667085;max-width:300px}
 </style>
 </head>
 <body>
-<div id="splash" aria-live="polite"><img src="icons/icon-192.png" alt=""><div class="bar" aria-hidden="true"><i></i></div><div>Membuka Kartu Proyek…</div></div>
-<div id="offline" role="alert"><img src="icons/icon-192.png" alt=""><b>Tidak ada koneksi internet</b>
-  <div>Kartu Proyek butuh internet untuk membaca dan menyimpan data.</div><button onclick="location.reload()">Coba lagi</button></div>
-<iframe id="app" title="Kartu Proyek" allow="clipboard-write; fullscreen" referrerpolicy="no-referrer"></iframe>
+<div class="layar" id="splash" aria-live="polite"><img src="icons/icon-192.png" alt=""><div class="bar" aria-hidden="true"><i></i></div><div>Membuka Kartu Proyek…</div>
+  <a class="btn" id="manual" href="#" style="display:none">Buka Kartu Proyek</a></div>
+<div class="layar" id="offline" role="alert"><img src="icons/icon-192.png" alt=""><b>Tidak ada koneksi internet</b>
+  <div class="kecil">Kartu Proyek butuh internet untuk membaca dan menyimpan data.</div><button class="btn" onclick="buka()">Coba lagi</button></div>
 <script>
   // Alamat web app Apps Script (STAGING). Ganti ke URL produksi saat rilis.
+  // Dibuka langsung (bukan di dalam frame): Google memblokir Apps Script di dalam situs lain pada Chrome HP.
   const APP_URL = 'https://script.google.com/macros/s/AKfycbwCTqDjLD3cFyOMkMcyhLnrV7ORKlEGhM_UukYVEMNhz_DGZ7_4o04WQgVPejawA-ri/exec';
-  const app = document.getElementById('app'), splash = document.getElementById('splash'), off = document.getElementById('offline');
+  const splash = document.getElementById('splash'), off = document.getElementById('offline'), man = document.getElementById('manual');
+  man.href = APP_URL;
   function buka() {
     if (!navigator.onLine) { off.style.display = 'flex'; splash.style.display = 'none'; return; }
-    off.style.display = 'none'; app.src = APP_URL;
+    off.style.display = 'none'; splash.style.display = 'flex';
+    location.replace(APP_URL);
+    setTimeout(() => { man.style.display = 'inline-block'; }, 4000);   // cadangan bila pengalihan diblokir
   }
-  app.addEventListener('load', () => { if (app.src) splash.style.display = 'none'; });
-  window.addEventListener('offline', () => { off.style.display = 'flex'; });
-  window.addEventListener('online', () => { if (off.style.display === 'flex') { splash.style.display = 'flex'; buka(); } });
-  buka();
+  window.addEventListener('online', () => { if (off.style.display === 'flex') buka(); });
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+  buka();
 </script>
 </body>
 </html>

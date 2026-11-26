@@ -614,7 +614,8 @@ async function master(key){if(!O.akses.admin){$('main').innerHTML='<div class="c
   $('main').innerHTML=`<h1>Master</h1><div class="sub">Data acuan untuk semua kartu proyek.</div><div class="tabs" role="tablist">${Object.keys(MT).map(k=>`<button role="tab" aria-selected="${k===M.key}" data-k="${k}" class="${k===M.key?'on':''}">${MT[k]}</button>`).join('')}</div><div class="card" id="mc">${skel(5).replace('<div class="card">','<div>')}</div>`;
   document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>master(b.dataset.k));
   try{M.data=await call('getMaster',M.key)}catch(e){fail(e);return}mdraw()}
-function mcell(k,ci,v,ri){const d=M.data,o=(list,blank)=>`<select data-r="${ri}" data-c="${ci}">${blank?'<option value=""></option>':''}${list.map(x=>`<option${String(x)===String(v)?' selected':''}>${esc(x)}</option>`).join('')}</select>`;
+// Dropdown selalu punya pilihan kosong: yang tampil = yang tersimpan (baris baru tidak diam-diam kosong).
+function mcell(k,ci,v,ri){const d=M.data,o=(list,blank)=>`<select data-r="${ri}" data-c="${ci}"><option value="">${blank?'':'– pilih –'}</option>${list.map(x=>`<option${String(x)===String(v)?' selected':''}>${esc(x)}</option>`).join('')}</select>`;
   if(k==='LIBUR'&&ci===0)return`<input type="date" data-r="${ri}" data-c="0" value="${esc(v)}">`;
   if(k==='USERS'&&ci===3)return o(d.divisi,1);if(k==='USERS'&&ci===4)return o(d.peran);
   if(k==='TA'&&ci===1)return o(d.kualifikasi,1);if(k==='TA'&&ci===2)return o(d.divisi,1);if(k==='TA'&&ci===3)return o(['YA','TIDAK']);

@@ -52,7 +52,7 @@ h1{font-size:24px;line-height:1.2;margin:0 0 4px;font-weight:700;letter-spacing:
 .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.x{border:0;background:none;color:var(--red);font-size:12px;font-weight:600;padding:2px 0}
 .pill{display:inline-flex;align-items:center;gap:5px;padding:1px 9px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap;line-height:20px}
 .pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
-.st-DRAFT{background:#EEF1F4;color:#4A5565}.st-MENUNGGU{background:var(--amber-l);color:var(--amber)}.st-DISETUJUI{background:var(--green-l);color:var(--green)}.st-DITOLAK{background:var(--red-l);color:var(--red)}
+.st-DRAFT{background:#EEF1F4;color:#4A5565}.st-MENUNGGU{background:var(--amber-l);color:var(--amber)}.st-DISETUJUI{background:var(--green-l);color:var(--green)}.st-DITOLAK{background:var(--red-l);color:var(--red)}.st-REVISI{background:#FDEBDD;color:#9A4A00}
 .st-LUNAS{background:var(--green-l);color:var(--green)}.st-BELUM{background:#fff;color:var(--amber);box-shadow:inset 0 0 0 1px #EBC98A}
 .empty{padding:32px 16px;color:var(--mut);text-align:center}.empty b{display:block;color:var(--ink);font-size:15px;margin-bottom:4px}
 table{width:100%;border-collapse:collapse}td,th{padding:8px 6px;border-bottom:1px solid var(--line2);text-align:left;font-size:13px;vertical-align:top}
@@ -103,7 +103,7 @@ th{font-size:12px;color:var(--mut);font-weight:600}td.n,th.n{text-align:right;wh
 .ruler li::after{content:"";position:absolute;top:0;left:0;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:inset 0 0 0 2px var(--line)}
 .ruler li.done::before{background:var(--blue)}.ruler li.done::after{background:var(--blue);box-shadow:none}
 .ruler li.now::after{background:radial-gradient(circle,var(--brand-red) 0 2.5px,#fff 3px);box-shadow:inset 0 0 0 3px var(--blue)}.ruler li.now b{color:var(--blue-d)}
-.ruler li.bad::after{background:var(--red);box-shadow:none}.ruler li.bad b{color:var(--red)}
+.ruler li.bad::after{background:var(--red);box-shadow:none}.ruler li.bad b{color:var(--red)}.ruler li.rev::before{background:var(--blue)}.ruler li.rev::after{background:#E0892E;box-shadow:none}.ruler li.rev b{color:#9A4A00}
 .k-body{padding:4px 22px 22px}
 .ptabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin:0 -22px 16px;padding:0 22px;overflow-x:auto}
 .ptabs button{border:0;background:none;padding:11px 12px;font-size:13px;font-weight:600;color:var(--mut);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
@@ -142,6 +142,11 @@ input.ro{background:#F3F5F7;color:var(--ink2)}
 #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:var(--r);font-size:13px;max-width:90vw;white-space:pre-line;display:none;z-index:50;box-shadow:0 8px 24px rgba(26,34,48,.3)}
 #toast.err{background:var(--red)}
 
+/* label staging */
+#envBar{display:none;position:fixed;top:0;left:0;right:0;height:26px;line-height:26px;text-align:center;font-size:12.5px;font-weight:700;letter-spacing:.02em;color:#3D2500;z-index:60;
+  background:repeating-linear-gradient(135deg,#F5C14D 0 14px,#F0B02A 14px 28px)}
+body.stg #envBar{display:block}body.stg{padding-top:26px}body.stg #nav{top:26px}body.stg #login{min-height:calc(100vh - 26px)}
+@media (max-width:820px){body.stg #nav{top:auto}}
 /* login */
 #login{display:none;min-height:100vh;align-items:center;justify-content:center;padding:20px}
 #login .card{width:100%;max-width:400px;padding:30px}#login .card{border-top:6px solid var(--blue)}#login .card .btn.b{background:var(--blue)}
@@ -209,6 +214,7 @@ input.ro{background:#F3F5F7;color:var(--ink2)}
   <header id="mtop"><img data-logo="LOGO_MARK" alt="AF&amp;R"><b>Kartu Proyek</b></header>
   <main id="main"></main>
 </div>
+<div id="envBar" role="note">STAGING · data uji, bukan data asli</div>
 <div id="toast" role="status"></div>
 <div class="ovl" id="dlgOvl"><div class="dlg" role="alertdialog" aria-modal="true" aria-labelledby="dlgT" aria-describedby="dlgP">
   <h2 id="dlgT"></h2><p id="dlgP"></p><div class="btns" style="justify-content:flex-end;margin-top:20px"><button class="btn" id="dlgNo">Batal</button><button class="btn b" id="dlgOk"></button></div></div></div>
@@ -231,7 +237,7 @@ const tgl=s=>{const m=String(s||'').match(/^(\d{4})-(\d{2})-(\d{2})/);return m?(
 const jam=s=>{const m=String(s||'').match(/ (\d{2}:\d{2})$/);return m?m[1]:''};
 const hariIni=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const titleCase=s=>String(s).toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
-const STL={DRAFT:'Draft',MENUNGGU:'Menunggu',DISETUJUI:'Disetujui',DITOLAK:'Ditolak'};
+const STL={DRAFT:'Draft',MENUNGGU:'Menunggu',REVISI:'Revisi',DISETUJUI:'Disetujui',DITOLAK:'Ditolak'};
 const pill=st=>`<span class="pill st-${esc(st)}">${STL[st]||esc(st)}</span>`;
 const lunas=belum=>belum?'<span class="pill st-BELUM">Belum lunas</span>':'<span class="pill st-LUNAS">Lunas</span>';
 const skel=n=>'<div class="card">'+Array.from({length:n||5},(_,i)=>`<span class="skel" style="width:${[60,90,75,85,50][i%5]}%"></span>`).join('')+'</div>';
@@ -252,6 +258,10 @@ function konfirm(judul,pesan,ok,bahaya){return new Promise(res=>{const o=$('dlgO
   const end=v=>{o.style.display='none';document.removeEventListener('keydown',k);res(v)},k=e=>{if(e.key==='Escape')end(false)};
   b.onclick=()=>end(true);$('dlgNo').onclick=()=>end(false);o.onclick=e=>{if(e.target===o)end(false)};document.addEventListener('keydown',k)})}
 
+/* ---------- label lingkungan ---------- */
+async function cekEnv(){let e=window.KP_ENV;if(!e){try{e=await gs('envInfo')}catch(x){}}
+  if(e==='staging'){document.body.classList.add('stg');document.title='[STAGING] Kartu Proyek'}}
+cekEnv();
 /* ---------- login ---------- */
 function showLogin(m){$('app').style.display='none';$('login').style.display='flex';$('lg1').style.display='';$('lg2').style.display='none';lmsg(m||'',m?'err':'')}
 function lmsg(t,c){$('lgMsg').textContent=t;$('lgMsg').className='msg '+(c||'')}
@@ -306,6 +316,7 @@ function home(){const a=O.akses,L=LV(),sum=(l,k)=>l.reduce((s,x)=>s+num(x[k]),0)
     a.manajer.length?q('Menunggu persetujuan Anda',L.filter(x=>x.status==='MENUNGGU'&&x.perluSaya),x=>rp(x.anggaran)+'<small>anggaran survey</small>','ring'):'',
     a.keuangan?q('Belum lunas',ok.filter(x=>x.belumBayar),x=>rp(x.sisaBayar)+'<small>sisa dibayar</small>','bayar'):'',
     a.keuangan?q('Perlu ID Project',ok.filter(x=>!x.idProject),x=>tgl(x.penawaranTgl)+'<small>tgl penawaran</small>','bayar'):'',
+    a.divisi.length?q('Perlu direvisi',L.filter(x=>x.milikSaya&&x.status==='REVISI'),x=>'<span style="color:#9A4A00;font-weight:600">'+esc((x.catatan||'').slice(0,40))+'</span>','ring'):'',
     a.divisi.length?q('Ditolak, perlu diperbaiki',L.filter(x=>x.milikSaya&&x.status==='DITOLAK'),x=>'<span class="flag">'+esc((x.catatan||'').slice(0,40))+'</span>','ring'):'',
     a.divisi.length?q('Draft Anda, belum diajukan',L.filter(x=>x.milikSaya&&x.status==='DRAFT'),x=>rp(x.anggaran)+'<small>anggaran survey</small>','ring'):''].filter(String);
   $('main').innerHTML=`<h1>Halo, ${esc(a.nama)}</h1><div class="sub">${esc(peran(a))}${(O.divisiLihat||[]).length===1?', '+esc(titleCase(O.divisiLihat[0])):''}. Kartu Proyek ${O.tahun}.</div>${divTabs()}
@@ -319,7 +330,7 @@ function home(){const a=O.akses,L=LV(),sum=(l,k)=>l.reduce((s,x)=>s+num(x[k]),0)
 function listView(){const apv=V==='aksi';
   $('main').innerHTML=`<h1>${apv?'Perlu tindakan':'Daftar proyek'}</h1><div class="sub">${apv?'Persetujuan, ID Project, dan pembayaran yang menunggu Anda.':'Semua proyek '+O.tahun+' yang bisa Anda lihat.'}</div>${divTabs()}
   <div class="split${SEL?' det':''}" id="split"><div class="lp"><div class="flt"><input id="q" type="search" aria-label="Cari" placeholder="Cari pemberi tugas, no. penawaran, no. kartu" value="${esc(Q.q)}">
-  <select id="st" aria-label="Saring status"><option value="">Semua status</option>${[['DRAFT','Draft'],['MENUNGGU','Menunggu'],['DISETUJUI','Disetujui'],['DITOLAK','Ditolak'],['BELUM LUNAS','Disetujui, belum lunas'],['LUNAS','Disetujui, lunas']].map(s=>`<option value="${s[0]}"${s[0]===Q.st?' selected':''}>${s[1]}</option>`).join('')}</select>
+  <select id="st" aria-label="Saring status"><option value="">Semua status</option>${[['DRAFT','Draft'],['MENUNGGU','Menunggu'],['REVISI','Revisi'],['DISETUJUI','Disetujui'],['BELUM LUNAS','Disetujui, belum lunas'],['LUNAS','Disetujui, lunas']].map(s=>`<option value="${s[0]}"${s[0]===Q.st?' selected':''}>${s[1]}</option>`).join('')}</select>
   </div><div class="items" id="items"></div></div><div class="dp" id="dp"></div></div>`;
   $('q').oninput=e=>{Q.q=e.target.value;items()};$('st').onchange=e=>{Q.st=e.target.value;items()};
   items();if(SEL)openDet(SEL);else $('dp').innerHTML='<div class="card empty"><b>Pilih proyek</b>Klik salah satu proyek di daftar untuk melihat rinciannya.</div>'}
@@ -340,12 +351,12 @@ function catatanFee(p){return 'Fee diinput '+rp(p.feeInput)+', '+(p.feePPN==='YA
 function tims(R,T){return[...new Set(R.map(r=>String(r.tim)).concat(T.map(r=>String(r.tim))))].filter(x=>x&&x!=='undefined').sort((a,c)=>a-c)}
 function hitBayar(R,T){let tot=0,paid=0;R.forEach(r=>{tot+=num(r.jumlah);if(r.bayar==='DIBAYAR')paid+=num(r.jumlah)});T.forEach(r=>{tot+=num(r.total);if(r.bayar==='DIBAYAR')paid+=num(r.total)});return{tot,paid}}
 const AKSI=a=>{a=String(a);return a==='buat'?'Kartu dibuat':a==='ubah'?'Data diubah':a==='ajukan'?'Diajukan untuk persetujuan':/^setujui/.test(a)?'Disetujui'+(a.split(': ')[1]?': '+a.split(': ').slice(1).join(': '):'')
-  :/^tolak/.test(a)?'Ditolak'+(a.split(': ')[1]?': '+a.split(': ').slice(1).join(': '):''):/^ID Project/.test(a)?a:/^bayar /.test(a)?'Dibayar ('+a.slice(6)+')':/^batal bayar/.test(a)?'Pembayaran dibatalkan ('+a.slice(12)+')':a};
+  :/^kembalikan/.test(a)?'Dikembalikan untuk revisi'+(a.split(': ')[1]?': '+a.split(': ').slice(1).join(': '):''):/^ubah keuangan/.test(a)?'Diubah keuangan: '+a.slice(15):/^tolak/.test(a)?'Ditolak'+(a.split(': ')[1]?': '+a.split(': ').slice(1).join(': '):''):/^ID Project/.test(a)?a:/^bayar /.test(a)?'Dibayar ('+a.slice(6)+')':/^batal bayar/.test(a)?'Pembayaran dibatalkan ('+a.slice(12)+')':a};
 function ruler(p,lunasSemua){const r=DET.riwayat||[],last=k=>{const x=r.filter(y=>y.aksi===k||y.aksi.indexOf(k+':')===0).pop();return x?tgl(x.waktu):''};
   const st=p.status,tolak=st==='DITOLAK',sudah=st==='DISETUJUI';
   const s=[['Draft',last('buat')||tgl(p.dibuat),'done'],
-    ['Menunggu',p.tglAjukan?tgl(p.tglAjukan):'',st==='DRAFT'?'':st==='MENUNGGU'?'now':'done'],
-    [tolak?'Ditolak':'Disetujui',p.tglPutusan?tgl(p.tglPutusan):'',tolak?'bad':sudah?'done':''],
+    st==='REVISI'?['Revisi',p.tglPutusan?tgl(p.tglPutusan):'','rev']:['Menunggu',p.tglAjukan?tgl(p.tglAjukan):'',st==='DRAFT'?'':st==='MENUNGGU'?'now':'done'],
+    [tolak?'Ditolak':'Disetujui',p.tglPutusan&&st!=='REVISI'?tgl(p.tglPutusan):'',tolak?'bad':sudah?'done':''],
     ['Lunas',sudah&&lunasSemua?'semua dibayar':sudah?'sedang dibayar':'',sudah&&lunasSemua?'done':sudah?'now':'']];
   if(st==='DRAFT')s[0][2]='now';
   return`<ol class="ruler" aria-label="Tahap proyek">${s.map(x=>`<li class="${x[2]}"><b>${x[0]}</b>${x[1]||'&nbsp;'}</li>`).join('')}</ol>`}
@@ -360,6 +371,12 @@ function alokasi(p){const net=num(p.net),fi=num(p.feeIncl),q=(x,b)=>b?pc(x/b):''
   +`<tr><td colspan="3" style="color:var(--mut);padding-top:14px">Dihitung dari fee incl. PPN</td></tr>`
   +R('PPN',q(p.ppn,fi),p.ppn)+R('PPh',q(p.pph,fi),p.pph)+R('Total biaya, PPN &amp; PPh',q(p.totalBiaya,fi),p.totalBiaya,1)
   +R('Porsi perusahaan',pc(p.porsiPct),p.porsi,1)+'</table></div>'}
+/** Penerima biaya tim (SAMA dengan penerimaBiaya_ di Approval.gs): BBM & tol ke driver tim, hotel & transport lain ke orang pertama tim. */
+function penerima(ppl,c){const urut=ppl.slice().sort((a,b)=>num(a.no)-num(b.no)),ketua=urut[0],drv=urut.find(r=>/driver/i.test((r.kualifikasi||'')+' '+(r.nama||'')));
+  const m={};c.forEach(r=>{const bbm=drv&&r.jenis==='TRANSPORT'&&/\bbbm\b|\btol/i.test(r.uraian||''),ke=bbm?drv:ketua;if(!ke)return;
+    const x=m[ke.nama]=m[ke.nama]||{v:0,hotel:0,bbm:0,lain:0};x.v+=num(r.total);if(r.jenis==='HOTEL')x.hotel+=num(r.total);else if(bbm)x.bbm+=num(r.total);else x.lain+=num(r.total)});
+  return m}
+function ketBiaya(x){return[x.hotel||x.lain?(x.hotel&&x.lain?'hotel &amp; transport ':x.hotel?'hotel ':'transport ')+rp(x.hotel+x.lain):'',x.bbm?'BBM &amp; tol '+rp(x.bbm):''].filter(String).join(' + ')}
 function bayarCell(jenis,no,r,b){const paid=r.bayar==='DIBAYAR';
   if(!b.bayar)return paid?`<span class="pill st-LUNAS">Dibayar</span><div style="font-size:11.5px;color:var(--mut)">${tgl(r.tglBayar)}</div>`:'<span class="pill st-BELUM">Belum</span>';
   return paid?`<span class="pill st-LUNAS">Dibayar</span> <span style="font-size:11.5px;color:var(--mut)">${tgl(r.tglBayar)}</span> <button class="x" onclick="bayar('${jenis}',${no},false)">Batalkan</button>`
@@ -369,12 +386,16 @@ function det(){const p=DET.p,b=DET.boleh,R=DET.rincian,T=DET.tim||[],teams=tims(
   const tabs=[['ring','Ringkasan'],['tim','Tim & biaya'],['fee','Alokasi fee'],['bayar','Pembayaran']];
   let h=`<button class="btn back" onclick="closeDet()">← Kembali ke daftar</button><section class="kartu">
   <div class="k-top"><div><div class="k-no">${esc(p.id)}</div><div class="k-cust">${esc(p.customer)}</div><div class="k-meta">${esc(titleCase(p.divisi))}. ${esc(p.penawaran)}</div></div>
-  <div class="btns" style="margin:0;align-self:flex-start">${pill(p.status)}${b.edit?'<button class="btn" onclick="edit()">Edit</button>':''}<button class="btn" id="btnPdf" onclick="pdf()">Lihat PDF</button>${b.ajukan?'<button class="btn b" onclick="act(\'ajukan\')">Ajukan persetujuan</button>':''}</div></div>
+  <div class="btns" style="margin:0;align-self:flex-start">${pill(p.status)}${b.edit?`<button class="btn" onclick="edit()">${b.editKeu?'Ubah (keuangan)':'Edit'}</button>`:''}<button class="btn" id="btnPdf" onclick="pdf()">Lihat PDF</button>${b.ajukan?'<button class="btn b" onclick="act(\'ajukan\')">Ajukan persetujuan</button>':''}</div></div>
   <div class="k-fig"><div><small>Anggaran survey</small><b>${rp(p.anggaran)}</b></div><div><small>Fee excl. PPN</small><b>${rp(p.feeExcl)}</b></div>
   <div><small>Porsi perusahaan</small><b>${pc(p.porsiPct)}</b></div><div><small>Pembayaran</small><b>${p.status==='DISETUJUI'?(lunasSemua?'Lunas':rp(hb.paid)+' dari '+rp(hb.tot)):'Belum mulai'}</b></div></div>
   ${ruler(p,lunasSemua)}<div class="k-body"><div class="msg" id="msg" role="status"></div>`;
-  if(b.putuskan)h+=`<div class="box act"><b>Keputusan manajer</b><div style="font-size:13px;margin-top:2px">Periksa tim dan alokasi fee, lalu setujui atau tolak.${b.editTetap?' Anda juga bisa klik Edit; status tetap menunggu.':''}</div><label for="cat">Catatan (wajib bila menolak)</label><textarea id="cat" rows="2"></textarea><div class="btns"><button class="btn g" onclick="act('setuju')">Setujui</button><button class="btn r" onclick="act('tolak')">Tolak</button></div></div>`;
+  if(b.putuskan)h+=`<div class="box act"><b>Keputusan manajer</b><div style="font-size:13px;margin-top:2px">Periksa tim dan alokasi fee, lalu setujui, revisi sendiri, atau kembalikan ke penyusun.</div><label for="cat">Catatan (wajib bila dikembalikan ke penyusun)</label><textarea id="cat" rows="2" placeholder="mis. Rate hotel tim 2 terlalu tinggi, mohon cek ulang"></textarea>
+  <div class="btns"><button class="btn g" onclick="act('setuju')">Setujui</button>${b.edit?'<button class="btn" onclick="edit()">Revisi sendiri</button>':''}<button class="btn" onclick="act('kembali')">Kembalikan ke penyusun</button></div>
+  <div style="font-size:12px;color:var(--mut);margin-top:8px">Revisi sendiri: status tetap menunggu, lalu setujui. Kembalikan: penyusun memperbaiki lalu mengajukan ulang.</div></div>`;
   if(p.status==='MENUNGGU'&&!b.putuskan)h+='<div class="box">Menunggu keputusan manajer divisi.</div>';
+  if(p.status==='REVISI')h+=`<div class="box act"><b>Perlu direvisi:</b> ${esc(p.catatan||'-')}${b.edit?'<div class="btns"><button class="btn b" onclick="edit()">Perbaiki</button></div>':''}<div style="font-size:12.5px;margin-top:6px">Setelah diperbaiki, klik Ajukan persetujuan.</div></div>`;
+  if(p.catatanKeu)h+=`<div class="box"><b>Catatan perubahan keuangan</b><div style="white-space:pre-line;font-size:13px;margin-top:4px">${esc(p.catatanKeu)}</div></div>`;
   if(p.status==='DITOLAK'&&p.catatan)h+=`<div class="box" style="border-color:#E3B4B4;background:var(--red-l)"><b>Alasan ditolak:</b> ${esc(p.catatan)}${b.edit?'<div class="btns"><button class="btn" onclick="edit()">Perbaiki</button></div>':''}</div>`;
   h+=`<div class="ptabs" role="tablist" style="margin-top:14px">${tabs.map(t=>`<button role="tab" aria-selected="${t[0]===DTAB}" class="${t[0]===DTAB?'on':''}" onclick="DTAB='${t[0]}';det()">${t[1]}</button>`).join('')}</div>`;
   if(DTAB==='ring'){const dt=(a,t)=>a?esc(a)+(t?', '+tgl(t):''):'-';
@@ -390,7 +411,8 @@ function det(){const p=DET.p,b=DET.boleh,R=DET.rincian,T=DET.tim||[],teams=tims(
   if(DTAB==='tim'){teams.forEach(t=>{const ppl=R.filter(r=>String(r.tim)===t),c=cost.filter(r=>String(r.tim)===t),meta=T.find(r=>String(r.tim)===t&&r.jenis==='HOTEL')||{},lok=(ppl[0]||c[0]||meta).lokasi||'';
       const info=[meta.jenisAset,meta.tglMulai?tgl(meta.tglMulai)+(meta.tglSelesai?' s/d '+tgl(meta.tglSelesai):''):''].filter(String).join(', ');
       const sumP=ppl.reduce((s,r)=>s+num(r.jumlah),0),sumC=c.reduce((s,r)=>s+num(r.total),0);
-      h+=`<div class="teamh"><h3>Tim ${esc(t)}: ${esc(lok)}</h3></div>${info?`<div style="font-size:12.5px;color:var(--mut)">${esc(info)}</div>`:''}<div class="scroll"><table><tr><th>Tenaga ahli</th><th>DK/LK</th><th class="n">MD</th><th class="n">Rate</th><th class="n">Allowance</th><th class="n">TA &amp; AT</th><th class="n">Cadangan</th><th class="n">Jumlah</th></tr>
+      const pn=penerima(ppl,c);
+      h+=`<div class="teamh"><h3>Tim ${esc(t)}: ${esc(lok)}</h3></div>${Object.keys(pn).map(n=>`<div style="font-size:12.5px;color:var(--ink2)">Ditransfer ke ${esc(n)}: ${ketBiaya(pn[n])}</div>`).join('')}${info?`<div style="font-size:12.5px;color:var(--mut)">${esc(info)}</div>`:''}<div class="scroll"><table><tr><th>Tenaga ahli</th><th>DK/LK</th><th class="n">MD</th><th class="n">Rate</th><th class="n">Allowance</th><th class="n">TA &amp; AT</th><th class="n">Cadangan</th><th class="n">Jumlah</th></tr>
       ${ppl.map(r=>`<tr><td>${esc(r.nama)}<div style="font-size:11.5px;color:var(--mut)">${esc(r.kualifikasi)}</div></td><td>${esc(r.lkdk)}</td><td class="n">${esc(r.md)}</td><td class="n">${rp(r.rate)}</td><td class="n">${rp(r.allowance)}</td><td class="n">${rp(r.tata)}</td><td class="n">${rp(r.cadangan)}</td><td class="n">${rp(r.jumlah)}</td></tr>`).join('')}
       ${c.map(r=>`<tr><td colspan="7">${r.jenis==='HOTEL'?'Hotel '+num(r.qty)+' malam × '+num(r.kamar)+' kamar × '+rp(r.rate):'Transport: '+esc(r.uraian||'-')+', '+num(r.qty)+' × '+rp(r.rate)}</td><td class="n">${rp(r.total)}</td></tr>`).join('')}
       <tr class="tot"><td colspan="7">Jumlah tim ${esc(t)}</td><td class="n">${rp(sumP+sumC)}</td></tr></table></div>`});
@@ -407,9 +429,11 @@ function det(){const p=DET.p,b=DET.boleh,R=DET.rincian,T=DET.tim||[],teams=tims(
         :`<div><h2>Keuangan</h2><table class="kv"><tr><td>ID Project</td><td>${esc(p.idProject||'Belum diisi')}</td></tr></table></div></div>`;
       teams.forEach(t=>{const ppl=R.filter(r=>String(r.tim)===t),c=cost.filter(r=>String(r.tim)===t),lok=(ppl[0]||c[0]||{}).lokasi||'',sumC=c.reduce((s,r)=>s+num(r.total),0);
         const lt=ppl.every(r=>r.bayar==='DIBAYAR')&&c.every(r=>r.bayar==='DIBAYAR');
-        h+=`<div class="teamh"><h3>Tim ${esc(t)}: ${esc(lok)}</h3>${lunas(!lt)}</div><div class="scroll"><table><tr><th>Uraian</th><th class="n">Jumlah</th><th>Status</th></tr>
-        ${ppl.map(r=>`<tr><td>${esc(r.nama)} <span style="color:var(--mut);font-size:12px">(${esc(r.md)} MD)</span></td><td class="n">${rp(r.jumlah)}</td><td>${bayarCell('ORANG',r.no,r,b)}</td></tr>`).join('')}
-        ${sumC?`<tr><td>Hotel &amp; transport tim</td><td class="n">${rp(sumC)}</td><td>${bayarCell('TIM',+t,c[0],b)}</td></tr>`:''}</table></div>`})}}
+        const pn=penerima(ppl,c),diberi=Object.keys(pn).reduce((x,n)=>x+(ppl.some(r=>r.nama===n)?pn[n].v:0),0),sisaTim=sumC-diberi;
+        h+=`<div class="teamh"><h3>Tim ${esc(t)}: ${esc(lok)}</h3>${lunas(!lt)}</div><div class="scroll"><table><tr><th>Dibayar ke</th><th class="n">Jumlah transfer</th><th>Status</th></tr>
+        ${ppl.map(r=>{const x=pn[r.nama],tot=num(r.jumlah)+(x?x.v:0);
+          return`<tr><td><b>${esc(r.nama)}</b><div style="font-size:12px;color:var(--mut)">allowance ${rp(r.jumlah)} (${esc(r.md)} MD)${x?' + '+ketBiaya(x):''}</div></td><td class="n"><b>${rp(tot)}</b></td><td>${bayarCell('ORANG',r.no,r,b)}</td></tr>`}).join('')}
+        ${sisaTim>0?`<tr><td>Hotel &amp; transport tim (tanpa penerima)</td><td class="n">${rp(sisaTim)}</td><td>${bayarCell('TIM',+t,c[0],b)}</td></tr>`:''}</table></div>`})}}
   $('dp').innerHTML=h+'</div></section>'}
 function msg(t,c){const m=$('msg');if(m){m.className='msg '+(c||'');m.textContent=t}else toast(t,c==='err')}
 async function bayar(jenis,no,v){const tg=$('tglBayar')?$('tglBayar').value:'';if(v&&!tg){msg('Isi tanggal bayar.','err');return}
@@ -419,15 +443,17 @@ async function bayar(jenis,no,v){const tg=$('tglBayar')?$('tglBayar').value:'';i
   if(!r.ok){msg(r.error,'err');return}await refreshList();if($('items'))items();openDet(id,()=>{toast(v?'Ditandai dibayar.':'Pembayaran dibatalkan.');if($('tglBayar'))$('tglBayar').value=tg})}
 async function act(a){const id=DET.p.id;let r;
   if(a==='setuju'&&!await konfirm('Setujui '+id+'?','Anggaran survey '+rp(DET.p.anggaran)+'. Penyusun dan keuangan akan diberi tahu lewat email.','Setujui'))return;
-  if(a==='tolak'&&!String(($('cat')||{}).value||'').trim()){msg('Tulis alasan penolakan di kolom catatan.','err');$('cat').focus();return}
+  if(a==='kembali'&&!String(($('cat')||{}).value||'').trim()){msg('Tulis apa yang perlu direvisi di kolom catatan.','err');$('cat').focus();return}
+  if(a==='kembali'&&!await konfirm('Kembalikan '+id+' ke penyusun?','Status menjadi Revisi. Penyusun mendapat email berisi catatan Anda.','Kembalikan'))return;
   if(a==='ajukan'&&!await konfirm('Ajukan '+id+'?','Manajer divisi akan diberi tahu lewat email.','Ajukan'))return;
   msg('Memproses…');
   try{if(a==='ajukan')r=await call('ajukan',id);
-    if(a==='setuju'||a==='tolak')r=await call('putuskan',id,a==='setuju',$('cat').value);
+    if(a==='setuju')r=await call('putuskan',id,true,$('cat').value);
+    if(a==='kembali')r=await call('kembalikan',id,$('cat').value);
     if(a==='idp')r=await call('simpanIdProject',id,$('idp').value)}catch(e){msg(e.message,'err');return}
   if(!r.ok){msg(r.error,'err');return}
   await refreshList();if($('items'))items();
-  openDet(id,()=>toast(r.info||({ajukan:'Diajukan.',setuju:'Disetujui.',tolak:'Ditolak.',idp:'ID Project disimpan.'})[a]))}
+  openDet(id,()=>toast(r.info||({ajukan:'Diajukan.',setuju:'Disetujui.',tolak:'Ditolak.',kembali:'Dikembalikan ke penyusun.',idp:'ID Project disimpan.'})[a]))}
 let PDFURL=null;
 async function pdf(){const b=$('btnPdf');b.disabled=true;b.textContent='Menyiapkan PDF…';
   try{const r=await call('cetakPdf',DET.p.id);if(!r.ok){msg(r.error,'err');return}
@@ -462,7 +488,7 @@ function formBaru(){if(!O.akses.divisi.length){$('main').innerHTML='<div class="
 function pakaiDraf(){const d=bacaDraf();if(!d)return;S=d.s;STEP=d.step||1;DIRTY=true;form()}
 function buangDraf(){hapusDraf();form()}
 async function edit(){const p=DET.p,b=DET.boleh;
-  if(!(p.status==='MENUNGGU'&&b.editTetap)&&(p.status==='MENUNGGU'||p.status==='DISETUJUI')&&!await konfirm('Ubah proyek '+STL[p.status].toLowerCase()+'?','Setelah disimpan, status kembali ke Draft dan harus diajukan ulang.','Lanjut ubah'))return;
+  if(!b.editKeu&&!(p.status==='MENUNGGU'&&b.editTetap)&&(p.status==='MENUNGGU'||p.status==='DISETUJUI')&&!await konfirm('Ubah proyek '+STL[p.status].toLowerCase()+'?','Setelah disimpan, status kembali ke Draft dan harus diajukan ulang.','Lanjut ubah'))return;
   const m=String(p.penawaran||'').match(/^(\d+)\/PEN\/00-KJPP\/([IVX]+)\/(\d{4})$/),teams={};
   DET.rincian.forEach(r=>{const t=teams[r.tim]=teams[r.tim]||Object.assign(blankTim(),{lokasi:r.lokasi,orang:[],transport:[]});t.orang.push({nama:r.nama,lkdk:r.lkdk,md:r.md,tata:r.tata||'',cadangan:r.cadangan||'',mdManual:r.mdManual==='YA'})});
   (DET.tim||[]).forEach(r=>{const t=teams[r.tim]=teams[r.tim]||Object.assign(blankTim(),{lokasi:r.lokasi,orang:[],transport:[]});
@@ -470,7 +496,7 @@ async function edit(){const p=DET.p,b=DET.boleh;
   const tim=Object.keys(teams).sort((a,c)=>a-c).map(k=>{const t=teams[k];if(!t.orang.length)t.orang=[blankOrang()];if(!t.transport.length)t.transport=[{jenis:'',qty:'',rate:''}];return t});
   S=Object.assign(blank(),p,{titipan:p.titipan||'',feeInput:p.feeInput||p.feeExcl,feePPN:p.feePPN||'TIDAK',feeTA:p.feeTA||'YA',
     penawaranNo:m?m[1]:'',penawaranBln:m?m[2]:blank().penawaranBln,penawaranThn:m?m[3]:blank().penawaranThn,
-    pemilikSama:!!p.customer&&p.pemilik===p.customer,penggunaSama:!p.customer||!p.pengguna?'':p.pengguna===p.customer?'PEMBERI':p.pengguna===p.pemilik?'PEMILIK':'',tim:tim.length?tim:[blankTim()]});
+    _keu:!!b.editKeu,alasanKeu:'',pemilikSama:!!p.customer&&p.pemilik===p.customer,penggunaSama:!p.customer||!p.pengguna?'':p.pengguna===p.customer?'PEMBERI':p.pengguna===p.pemilik?'PEMILIK':'',tim:tim.length?tim:[blankTim()]});
   STEP=1;PV=null;DIRTY=false;V='edit';document.querySelectorAll('#nav .nb[data-v]').forEach(x=>x.classList.toggle('on',x.dataset.v==='baru'));form()}
 function fld(k,l,t,ph,extra){return`<label for="f_${k}">${l}</label><input id="f_${k}" data-k="${k}" type="${t||'text'}" value="${esc(S[k])}" placeholder="${esc(ph||'')}" ${extra||''}>`}
 function sel(k,l,list,v){return`<label for="f_${k}">${l}</label><select id="f_${k}" data-k="${k}"><option value=""></option>${list.map(x=>`<option${x===v?' selected':''}>${esc(x)}</option>`).join('')}</select>`}
@@ -488,6 +514,7 @@ const nOrang=()=>S.tim.reduce((s,t)=>s+t.orang.length,0);
 function form(){terapkanMD();
   const d=!S.id&&!DIRTY?bacaDraf():null;
   let h=`<h1>${S.id?'Ubah '+esc(S.id):'Proyek baru'}</h1>
+  ${S._keu?'<div class="note"><span><b>Perubahan oleh keuangan.</b> Status tetap Disetujui. Baris yang sudah dibayar tidak bisa diubah. Di langkah terakhir isi alasan; daftar perubahan dicatat otomatis.</span></div>':''}
   ${d?`<div class="note"><span>Ada isian proyek baru yang belum disimpan dari ${tgl(new Date(d.w).toISOString())}${d.s.customer?' ('+esc(d.s.customer)+')':''}.</span><button class="btn s b" onclick="pakaiDraf()">Lanjutkan isian itu</button><button class="btn s" onclick="buangDraf()">Buang</button></div>`:''}
   <div class="steps">${STEPS.map((n,i)=>`<button data-s="${i+1}" class="${i+1<=STEP?'d':''} ${i+1===STEP?'c':''}" aria-current="${i+1===STEP?'step':'false'}"><i></i>${i+1}. ${n}</button>`).join('')}</div>
   <div class="fwrap"><div class="card">`;
@@ -527,7 +554,7 @@ function form(){terapkanMD();
       <h3>Transport</h3>`;
       t.transport.forEach((x,xi)=>{h+=`<div class="row3"><div><label>Jenis</label><input data-t="${ti}" data-x="${xi}" data-k="jenis" value="${esc(x.jenis)}" placeholder="Pesawat, BBM + tol, sewa mobil"></div>${numIn(`data-t="${ti}" data-x="${xi}" data-k="qty"`,'Qty',x.qty)}${rpIn(`data-t="${ti}" data-x="${xi}" data-k="rate"`,'Rate'+(t.transport.length>1?` <button class="x" onclick="rmTr(${ti},${xi})">Hapus</button>`:''),x.rate)}</div>`});
       h+=`<div class="btns"><button class="btn" onclick="addTr(${ti})">Tambah jenis transport</button></div><div class="pv" id="tv${ti}"></div></div>`})}
-  if(STEP===4)h+='<div id="review"><span class="skel"></span><span class="skel" style="width:70%"></span></div>';
+  if(STEP===4)h+='<div id="review"><span class="skel"></span><span class="skel" style="width:70%"></span></div>'+(S._keu?`<label for="f_alasanKeu">Alasan perubahan (wajib)</label><textarea id="f_alasanKeu" data-k="alasanKeu" rows="2" placeholder="mis. Harga hotel naik sesuai bukti dari tim">${esc(S.alasanKeu)}</textarea>`:'');
   h+=`<div class="btns" style="margin-top:20px">${STEP>1?'<button class="btn" onclick="nav(-1)">← Kembali</button>':'<button class="btn" onclick="batal()">Batal</button>'}${STEP<4?'<button class="btn p" onclick="nav(1)">Lanjut</button>':`<button class="btn b" id="sv" onclick="save()">${S.id?'Simpan perubahan':'Simpan proyek'}</button>`}</div><div class="msg" id="msg" role="status"></div></div>
   <aside class="card sum" aria-label="Ringkasan hitungan"><h2>Ringkasan hitungan</h2><div id="sum" style="font-size:13px;color:var(--mut)">Isi fee dan tenaga ahli untuk melihat hitungan.</div></aside></div>`;
   $('main').innerHTML=h;
@@ -586,7 +613,8 @@ function onIn(e){const t=e.target,k=t.dataset.k;if(!k||!S||!t.closest('.fwrap'))
   if(k==='mdManual'){terapkanMD();const y=scrollY;form();scrollTo(0,y);return}
   live();clearTimeout(pvT);pvT=setTimeout(preview,500)}
 document.addEventListener('input',onIn);document.addEventListener('change',onIn);
-async function save(){const b=$('sv');b.disabled=true;b.textContent='Menyimpan…';let r;
+async function save(){if(S._keu&&!String(S.alasanKeu||'').trim()){const t=$('f_alasanKeu');if(t){t.classList.add('bad');t.focus()}msg('Isi alasan perubahan.','err');return}
+  const b=$('sv');b.disabled=true;b.textContent='Menyimpan…';let r;
   try{r=await call('simpanProyek',S)}catch(e){b.disabled=false;b.textContent='Simpan';msg(e.message,'err');return}
   b.disabled=false;b.textContent='Simpan';if(!r.ok){msg(r.errors.join('\n'),'err');return}
   if(!S.id)hapusDraf();S=null;DIRTY=false;await refreshList();V='daftar';SEL=r.id;DTAB='ring';go('daftar');
@@ -598,7 +626,7 @@ function rekap(){const L=LV(),sum=(l,k)=>l.reduce((s,x)=>s+num(x[k]),0);
   const head='<tr><th></th><th class="n">Proyek</th><th class="n">Fee excl. PPN</th><th class="n">Anggaran survey</th><th class="n">Porsi perusahaan</th></tr>';
   const ok=L.filter(x=>x.status==='DISETUJUI'),go1=x=>`onclick="openFrom('daftar','${esc(x.id)}','bayar')" style="cursor:pointer"`;
   $('main').innerHTML=`<h1>Rekap ${O.tahun}</h1><div class="sub">Dihitung dari kartu proyek${DV?' '+esc(titleCase(DV)):''}.</div>${divTabs()}
-  <div class="card"><h2>Per status</h2><div class="scroll"><table>${head}${['DRAFT','MENUNGGU','DISETUJUI','DITOLAK'].map(s=>row(pill(s),L.filter(x=>x.status===s))).join('')}<tr class="tot">${row('Total',L).slice(4)}</table></div></div>
+  <div class="card"><h2>Per status</h2><div class="scroll"><table>${head}${['DRAFT','MENUNGGU','REVISI','DISETUJUI'].concat(L.some(x=>x.status==='DITOLAK')?['DITOLAK']:[]).map(s=>row(pill(s),L.filter(x=>x.status===s))).join('')}<tr class="tot">${row('Total',L).slice(4)}</table></div></div>
   <div class="card" style="margin-top:16px"><h2>Disetujui per divisi</h2><div class="scroll"><table>${head}${(DV?[DV]:O.divisiLihat).map(d=>row(esc(titleCase(d)),ok.filter(x=>x.divisi===d))).join('')}<tr class="tot">${row('Total',ok).slice(4)}</table></div></div>
   <div class="card" style="margin-top:16px"><h2>Status pembayaran</h2>${(l=>l.length?`<div class="scroll"><table><tr><th>No. kartu</th><th>Pemberi tugas</th><th class="n">Anggaran</th><th class="n">Dibayar</th><th class="n">Sisa</th><th>Status</th></tr>
   ${l.map(x=>`<tr ${go1(x)}><td><b>${esc(x.id)}</b></td><td>${esc(x.customer)}</td><td class="n">${rp(x.anggaran)}</td><td class="n">${rp(x.dibayar)}</td><td class="n">${rp(x.sisaBayar)}</td><td>${lunas(x.belumBayar)}</td></tr>`).join('')}

@@ -94,7 +94,7 @@ th{font-size:12px;color:var(--mut);font-weight:600}td.n,th.n{text-align:right;wh
 .kartu{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
 .k-top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:20px 22px 16px;border-top:6px solid var(--blue);
   background:repeating-linear-gradient(#fff 0 27px,#EEF2F4 27px 28px)}
-.k-no{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.1}.k-cust{font-size:16px;font-weight:600;margin-top:4px}.k-meta{font-size:12.5px;color:var(--mut);margin-top:2px}
+.k-no{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.1}.k-idp{display:inline-block;margin-top:6px;font-size:12.5px;color:var(--blue-d);background:var(--blue-l);border-radius:4px;padding:1px 8px}.k-idp b{font-weight:700}.k-cust{font-size:16px;font-weight:600;margin-top:4px}.k-meta{font-size:12.5px;color:var(--mut);margin-top:2px}
 .k-fig{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .k-fig div{padding:12px 22px;border-right:1px solid var(--line2)}.k-fig div:last-child{border-right:0}.k-fig small{display:block;font-size:12px;color:var(--mut)}.k-fig b{font-size:17px}
 .ruler{list-style:none;margin:0;padding:16px 22px 18px;display:grid;grid-template-columns:repeat(4,1fr);counter-reset:s}
@@ -324,7 +324,7 @@ function home(){const a=O.akses,L=LV(),sum=(l,k)=>l.reduce((s,x)=>s+num(x[k]),0)
   <div class="stats"><div class="stat"><div class="l">Proyek ${O.tahun}</div><div class="v">${L.length}</div></div>
   <div class="stat"><div class="l">Menunggu persetujuan</div><div class="v">${L.filter(x=>x.status==='MENUNGGU').length}</div></div>
   <div class="stat"><div class="l">Anggaran survey disetujui</div><div class="v">${rp(sum(ok,'anggaran'))}</div></div></div>
-  <div class="card"><h2>Proyek terbaru</h2>${L.length?`<div class="scroll"><table><tr><th>No. kartu</th><th>Pemberi tugas</th><th class="n">Anggaran survey</th><th>Status</th></tr>${L.slice(0,8).map(x=>`<tr style="cursor:pointer" onclick="openFrom('daftar','${esc(x.id)}')"><td><b>${esc(x.id)}</b></td><td>${esc(x.customer)}</td><td class="n">${rp(x.anggaran)}</td><td>${pill(x.status)}</td></tr>`).join('')}</table></div>`:'<div class="empty"><b>Belum ada proyek</b>Proyek yang dibuat akan muncul di sini.</div>'}</div>`}
+  <div class="card"><h2>Proyek terbaru</h2>${L.length?`<div class="scroll"><table><tr><th>No. kartu</th><th>Pemberi tugas</th><th class="n">Anggaran survey</th><th>Status</th></tr>${L.slice(0,8).map(x=>`<tr style="cursor:pointer" onclick="openFrom('daftar','${esc(x.id)}')"><td><b>${esc(x.id)}</b>${x.idProject?`<div style="font-size:12px;color:var(--blue-d)">${esc(x.idProject)}</div>`:''}</td><td>${esc(x.customer)}</td><td class="n">${rp(x.anggaran)}</td><td>${pill(x.status)}</td></tr>`).join('')}</table></div>`:'<div class="empty"><b>Belum ada proyek</b>Proyek yang dibuat akan muncul di sini.</div>'}</div>`}
 
 /* ---------- daftar & perlu tindakan ---------- */
 function listView(){const apv=V==='aksi';
@@ -336,8 +336,8 @@ function listView(){const apv=V==='aksi';
   items();if(SEL)openDet(SEL);else $('dp').innerHTML='<div class="card empty"><b>Pilih proyek</b>Klik salah satu proyek di daftar untuk melihat rinciannya.</div>'}
 function items(){const apv=V==='aksi',q=Q.q.toLowerCase();
   const l=LIST.filter(x=>(!apv||x.perluSaya)&&(!Q.st||(Q.st==='LUNAS'?x.status==='DISETUJUI'&&!x.belumBayar:Q.st==='BELUM LUNAS'?x.status==='DISETUJUI'&&x.belumBayar:x.status===Q.st))&&(!DV||x.divisi===DV)&&(!q||(x.customer+' '+x.penawaran+' '+x.id).toLowerCase().includes(q)));
-  $('items').innerHTML=l.length?l.map(x=>`<div class="item${x.id===SEL?' on':''}" data-id="${esc(x.id)}" tabindex="0" role="button"><div class="t"><b>${esc(x.id)}</b>${pill(x.status)}${x.status==='DISETUJUI'?lunas(x.belumBayar):''}${x.perluSaya&&!apv?'<span class="flag">Perlu tindakan</span>':''}</div>
-  <div class="c">${esc(x.customer)}</div><div class="m">${esc(x.penawaran)}</div><div class="m">${esc(titleCase(x.divisi))}, ${rp(x.anggaran)}</div></div>`).join('')
+  $('items').innerHTML=l.length?l.map(x=>`<div class="item${x.id===SEL?' on':''}" data-id="${esc(x.id)}" tabindex="0" role="button"><div class="t"><b>${esc(x.id)}</b>${pill(x.status)}${x.induk?'<span class="pill st-REVISI" style="background:#FDEBDD">Addendum</span>':''}${x.status==='DISETUJUI'?lunas(x.belumBayar):''}${x.perluSaya&&!apv?'<span class="flag">Perlu tindakan</span>':''}</div>
+  ${x.idProject?`<div class="m" style="color:var(--blue-d);font-weight:600">ID Project ${esc(x.idProject)}</div>`:''}<div class="c">${esc(x.customer)}</div><div class="m">${esc(x.penawaran)}</div><div class="m">${esc(titleCase(x.divisi))}, ${rp(x.anggaran)}</div></div>`).join('')
   :`<div class="empty">${apv?'<b>Semua beres</b>Tidak ada yang menunggu Anda.':Q.q||Q.st?'<b>Tidak ada yang cocok</b>Ubah kata pencarian atau saringan status.':'<b>Belum ada proyek</b>'}</div>`;
   document.querySelectorAll('.item').forEach(e=>{e.onclick=()=>openDet(e.dataset.id);e.onkeydown=k=>{if(k.key==='Enter')e.click()}})}
 async function openDet(id,after){if(SEL!==id)DTAB=DTAB&&SEL===null?DTAB:null;SEL=id;document.querySelectorAll('.item').forEach(e=>e.classList.toggle('on',e.dataset.id===id));$('split').classList.add('det');
@@ -385,8 +385,8 @@ function det(){const p=DET.p,b=DET.boleh,R=DET.rincian,T=DET.tim||[],teams=tims(
   if(!DTAB)DTAB=b.bayar?'bayar':'ring';
   const tabs=[['ring','Ringkasan'],['tim','Tim & biaya'],['fee','Alokasi fee'],['bayar','Pembayaran']];
   let h=`<button class="btn back" onclick="closeDet()">← Kembali ke daftar</button><section class="kartu">
-  <div class="k-top"><div><div class="k-no">${esc(p.id)}</div><div class="k-cust">${esc(p.customer)}</div><div class="k-meta">${esc(titleCase(p.divisi))}. ${esc(p.penawaran)}</div></div>
-  <div class="btns" style="margin:0;align-self:flex-start">${pill(p.status)}${b.edit?`<button class="btn" onclick="edit()">${b.editKeu?'Ubah (keuangan)':'Edit'}</button>`:''}<button class="btn" id="btnPdf" onclick="pdf()">Lihat PDF</button>${b.ajukan?'<button class="btn b" onclick="act(\'ajukan\')">Ajukan persetujuan</button>':''}</div></div>
+  <div class="k-top"><div><div class="k-no">${esc(p.id)}</div>${p.idProject?`<div class="k-idp">ID Project <b>${esc(p.idProject)}</b></div>`:''}${p.induk?`<div class="k-idp" style="background:#FDEBDD;color:#9A4A00">Addendum ${esc(p.addendumKe)} dari <a href="#" onclick="openFrom('daftar','${esc(p.induk)}','ring');return false" style="color:inherit;font-weight:700">${esc(p.induk)}</a></div>`:''}<div class="k-cust">${esc(p.customer)}</div><div class="k-meta">${esc(titleCase(p.divisi))}. ${esc(p.penawaran)}</div></div>
+  <div class="btns" style="margin:0;align-self:flex-start">${pill(p.status)}${b.edit?`<button class="btn" onclick="edit()">${b.editKeu?'Ubah (keuangan)':'Edit'}</button>`:''}<button class="btn" id="btnPdf" onclick="pdf()">Lihat PDF</button>${b.ajukan?'<button class="btn b" onclick="act(\'ajukan\')">Ajukan persetujuan</button>':''}${b.addendum?'<button class="btn" onclick="buatAddendum()">Buat addendum</button>':''}</div></div>
   <div class="k-fig"><div><small>Anggaran survey</small><b>${rp(p.anggaran)}</b></div><div><small>Fee excl. PPN</small><b>${rp(p.feeExcl)}</b></div>
   <div><small>Porsi perusahaan</small><b>${pc(p.porsiPct)}</b></div><div><small>Pembayaran</small><b>${p.status==='DISETUJUI'?(lunasSemua?'Lunas':rp(hb.paid)+' dari '+rp(hb.tot)):'Belum mulai'}</b></div></div>
   ${ruler(p,lunasSemua)}<div class="k-body"><div class="msg" id="msg" role="status"></div>`;
@@ -406,7 +406,12 @@ function det(){const p=DET.p,b=DET.boleh,R=DET.rincian,T=DET.tim||[],teams=tims(
     <tr><td>Survey</td><td>${p.tglMulai?tgl(p.tglMulai)+' s/d '+tgl(p.tglSelesai):'-'}</td></tr><tr><td>Marketing</td><td>${esc(p.marketing||'-')}</td></tr>
     <tr><td>Penyusun</td><td>${esc(p.penyusun)}</td></tr><tr><td>Manajer</td><td>${esc(p.manajer||'-')}</td></tr>${p.idProject?`<tr><td>ID Project</td><td><b>${esc(p.idProject)}</b></td></tr>`:''}</table>
     ${p.feeInput?`<div class="pv">${esc(catatanFee(p))}</div>`:''}</div>
-    <div><h2>Riwayat</h2>${(DET.riwayat||[]).length?`<ul class="tl">${DET.riwayat.slice().reverse().map(x=>`<li><span>${tgl(x.waktu)} ${jam(x.waktu)}</span><div><b>${esc(AKSI(x.aksi))}</b><br><span>${esc(x.nama)}</span></div></li>`).join('')}</ul>`:'<div class="empty" style="padding:12px 0">Belum ada riwayat.</div>'}</div></div>`}
+    <div>${(DET.addenda||[]).length?(()=>{const A=DET.addenda,sum=k=>num(p[k])+A.reduce((x,a)=>x+num(a[k]),0);
+      return`<h2>Addendum</h2><table><tr><th>Kartu</th><th>Status</th><th class="n">Anggaran survey</th><th class="n">Fee excl. PPN</th></tr>
+      ${A.map(a=>`<tr style="cursor:pointer" onclick="openFrom('daftar','${esc(a.id)}','ring')"><td><b>${esc(a.id)}</b></td><td>${pill(a.status)}</td><td class="n">${rp(a.anggaran)}</td><td class="n">${rp(a.feeExcl)}</td></tr>`).join('')}
+      <tr class="tot"><td colspan="2">Total proyek termasuk addendum</td><td class="n">${rp(sum('anggaran'))}</td><td class="n">${rp(sum('feeExcl'))}</td></tr>
+      <tr><td colspan="2">Porsi perusahaan gabungan</td><td colspan="2" class="n"><b>${rp(sum('porsi'))}</b>${sum('feeIncl')?' ('+pc(sum('porsi')/sum('feeIncl'))+')':''}</td></tr></table>
+      <div style="font-size:12px;color:var(--mut);margin:4px 0 18px">Total memakai semua addendum, termasuk yang belum disetujui.</div>`})():''}<h2>Riwayat</h2>${(DET.riwayat||[]).length?`<ul class="tl">${DET.riwayat.slice().reverse().map(x=>`<li><span>${tgl(x.waktu)} ${jam(x.waktu)}</span><div><b>${esc(AKSI(x.aksi))}</b><br><span>${esc(x.nama)}</span></div></li>`).join('')}</ul>`:'<div class="empty" style="padding:12px 0">Belum ada riwayat.</div>'}</div></div>`}
   if(DTAB==='fee')h+=`<h2>Alokasi fee</h2>${alokasi(p)}${p.feeInput?`<div class="pv">${esc(catatanFee(p))}</div>`:''}`;
   if(DTAB==='tim'){teams.forEach(t=>{const ppl=R.filter(r=>String(r.tim)===t),c=cost.filter(r=>String(r.tim)===t),meta=T.find(r=>String(r.tim)===t&&r.jenis==='HOTEL')||{},lok=(ppl[0]||c[0]||meta).lokasi||'';
       const info=[meta.jenisAset,meta.tglMulai?tgl(meta.tglMulai)+(meta.tglSelesai?' s/d '+tgl(meta.tglSelesai):''):''].filter(String).join(', ');
@@ -483,6 +488,15 @@ function blank(){const d=new Date();return{id:'',divisi:O.akses.divisi.length===
 function bacaDraf(){try{return JSON.parse(localStorage.getItem(DKEY())||'null')}catch(e){return null}}
 function simpanDraf(){if(!S||S.id)return;try{localStorage.setItem(DKEY(),JSON.stringify({w:Date.now(),s:S,step:STEP}))}catch(e){}}
 function hapusDraf(){try{localStorage.removeItem(DKEY())}catch(e){}}
+/** Addendum: kartu baru berisi data penugasan induk; tim diisi ulang (lokasi disalin). */
+function buatAddendum(){const p=DET.p,m=String(p.penawaran||'').match(/^(\d+)\/PEN\/00-KJPP\/([IVX]+)\/(\d{4})$/);
+  const lok=[...new Set((DET.rincian||[]).map(r=>r.tim+'|'+(r.lokasi||'')))].map(k=>k.split('|').slice(1).join('|')).filter(String);
+  S=Object.assign(blank(),{divisi:p.divisi,induk:p.id,noSO:p.noSO||'',noSOTgl:p.noSOTgl||'',penawaranNo:m?m[1]:'',penawaranBln:m?m[2]:blank().penawaranBln,penawaranThn:m?m[3]:blank().penawaranThn,
+    penawaranTgl:p.penawaranTgl||'',spk:p.spk||'',spkTgl:p.spkTgl||'',customer:p.customer,pemilik:p.pemilik,pengguna:p.pengguna,
+    pemilikSama:!!p.customer&&p.pemilik===p.customer,penggunaSama:p.pengguna===p.customer?'PEMBERI':p.pengguna===p.pemilik?'PEMILIK':'',
+    jenisJasa:p.jenisJasa||'PENILAIAN',tujuan:p.tujuan||'',marketing:p.marketing||'',waktuKontrak:p.waktuKontrak||O.waktuKontrak,
+    feeInput:'',feePPN:p.feePPN||'TIDAK',feeTA:p.feeTA||'YA',titipan:'',tim:(lok.length?lok:['']).map(l=>Object.assign(blankTim(),{lokasi:l}))});
+  STEP=1;PV=null;DIRTY=true;V='baru';document.querySelectorAll('#nav .nb[data-v]').forEach(x=>x.classList.toggle('on',x.dataset.v==='baru'));form();window.scrollTo(0,0)}
 function formBaru(){if(!O.akses.divisi.length){$('main').innerHTML='<div class="card empty"><b>Belum bisa membuat proyek</b>Akun Anda belum terdaftar sebagai penyusun. Hubungi admin.</div>';return}
   S=blank();STEP=1;PV=null;DIRTY=false;form()}
 function pakaiDraf(){const d=bacaDraf();if(!d)return;S=d.s;STEP=d.step||1;DIRTY=true;form()}
@@ -513,13 +527,14 @@ function rate(o){const r=O.tarif[kualOf(o.nama)];return r?(r[o.lkdk]||0):0}
 const nOrang=()=>S.tim.reduce((s,t)=>s+t.orang.length,0);
 function form(){terapkanMD();
   const d=!S.id&&!DIRTY?bacaDraf():null;
-  let h=`<h1>${S.id?'Ubah '+esc(S.id):'Proyek baru'}</h1>
+  let h=`<h1>${S.id?'Ubah '+esc(S.id):S.induk?'Addendum untuk '+esc(S.induk):'Proyek baru'}</h1>
+  ${S.induk&&!S.id?'<div class="note"><span><b>Addendum.</b> Data penugasan disalin dari kartu induk. Isi tim, man-day, hotel dan transport tambahan saja. Fee boleh 0 bila tidak ada fee tambahan. Kartu induk tidak berubah.</span></div>':''}
   ${S._keu?'<div class="note"><span><b>Perubahan oleh keuangan.</b> Status tetap Disetujui. Baris yang sudah dibayar tidak bisa diubah. Di langkah terakhir isi alasan; daftar perubahan dicatat otomatis.</span></div>':''}
   ${d?`<div class="note"><span>Ada isian proyek baru yang belum disimpan dari ${tgl(new Date(d.w).toISOString())}${d.s.customer?' ('+esc(d.s.customer)+')':''}.</span><button class="btn s b" onclick="pakaiDraf()">Lanjutkan isian itu</button><button class="btn s" onclick="buangDraf()">Buang</button></div>`:''}
   <div class="steps">${STEPS.map((n,i)=>`<button data-s="${i+1}" class="${i+1<=STEP?'d':''} ${i+1===STEP?'c':''}" aria-current="${i+1===STEP?'step':'false'}"><i></i>${i+1}. ${n}</button>`).join('')}</div>
   <div class="fwrap"><div class="card">`;
   if(STEP===1){
-    h+=(S.id?`<label>Divisi</label><div><b>${esc(titleCase(S.divisi))}</b></div>`:sel('divisi','Divisi',O.akses.divisi,S.divisi))
+    h+=(S.id||S.induk?`<label>Divisi</label><div><b>${esc(titleCase(S.divisi))}</b></div>`:sel('divisi','Divisi',O.akses.divisi,S.divisi))
     +`<div class="row"><div>${fld('noSO','No. SO')}</div><div>${fld('noSOTgl','Tanggal SO','date')}</div></div>`
     +`<label for="f_penawaranNo">No. penawaran</label><div class="pnw" id="w_penawaran"><input id="f_penawaranNo" data-k="penawaranNo" value="${esc(S.penawaranNo)}" placeholder="0040" inputmode="numeric" maxlength="4"><span>${esc(O.kodePenawaran)}</span>`
     +`<select data-k="penawaranBln" aria-label="Bulan penawaran">${O.bulan.map(b=>`<option${b===S.penawaranBln?' selected':''}>${b}</option>`).join('')}</select><span>/</span><input data-k="penawaranThn" id="f_penawaranThn" aria-label="Tahun penawaran" value="${esc(S.penawaranThn)}" inputmode="numeric" maxlength="4"></div>`
@@ -532,7 +547,7 @@ function form(){terapkanMD();
     +(S.penggunaSama?'':`<input data-k="pengguna" aria-label="Pengguna laporan" value="${esc(S.pengguna)}">`)+`</div></div>`
     +`<div class="row"><div>${fld('jenisJasa','Jenis jasa')}</div><div>${fld('tujuan','Tujuan penilaian','text','Penjaminan utang')}</div></div>`
     +`<div class="row"><div>${fld('marketing','Marketing')}</div><div>${fld('waktuKontrak','Waktu sesuai kontrak')}</div></div>`
-    +`<h2 style="margin-top:22px">Fee jasa</h2><div class="row">${rpIn('data-k="feeInput" id="f_feeInput"','Fee jasa',S.feeInput)}${rpIn('data-k="titipan"','Titipan (bila ada)',S.titipan)}</div>`
+    +`<h2 style="margin-top:22px">${S.induk?'Fee addendum':'Fee jasa'}</h2><div class="row">${rpIn('data-k="feeInput" id="f_feeInput"',S.induk?'Fee tambahan (0 bila tidak ada)':'Fee jasa',S.feeInput)}${rpIn('data-k="titipan"','Titipan (bila ada)',S.titipan)}</div>`
     +`<div class="row"><div>${radio('feePPN','PPN',[['TIDAK','Belum termasuk PPN'],['YA','Sudah termasuk PPN']])}</div><div>${radio('feeTA','Transport & akomodasi',[['YA','Termasuk dalam fee'],['TIDAK','Tidak termasuk (reimburse klien)']])}</div></div>`
     +`<div class="pv" id="feeinfo"></div>`}
   if(STEP===2){h+='<div class="sub" style="margin:0 0 12px">Satu lokasi satu tim. Tambah lokasi bila survey di beberapa tempat.</div>';
@@ -567,7 +582,7 @@ function check(){const e=[],add=(sel,m)=>e.push({sel,m});
   if(STEP===1){if(!S.divisi)add('#f_divisi','Pilih divisi.');
     if(!/^\d{1,4}$/.test(String(S.penawaranNo||'').trim()))add('#f_penawaranNo','Isi nomor penawaran (1-4 angka).');
     if(!/^\d{4}$/.test(String(S.penawaranThn||'')))add('#f_penawaranThn','Tahun 4 angka.');
-    if(!String(S.customer||'').trim())add('#f_customer','Isi pemberi tugas.');if(!(num(S.feeInput)>0))add('#f_feeInput','Isi fee jasa.')}
+    if(!String(S.customer||'').trim())add('#f_customer','Isi pemberi tugas.');if(!S.induk&&!(num(S.feeInput)>0))add('#f_feeInput','Isi fee jasa.')}
   if(STEP===2)S.tim.forEach((t,i)=>{const o=t.orang.filter(x=>x.nama);
     if(!String(t.lokasi||'').trim())add('#lok'+i,'Isi lokasi aset tim '+(i+1)+'.');
     if(!o.length)add(`[data-t="${i}"][data-o="0"][data-k="nama"]`,'Pilih minimal satu tenaga ahli.');

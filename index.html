@@ -662,7 +662,7 @@ function mcell(k,ci,v,ri){const d=M.data,o=(list,blank)=>`<select data-r="${ri}"
   if(k==='LIBUR'&&ci===0)return`<input type="date" data-r="${ri}" data-c="0" value="${esc(v)}">`;
   if(k==='USERS'&&ci===3)return o(d.divisi,1);if(k==='USERS'&&ci===4)return o(d.peran);
   if(k==='TA'&&ci===1)return o(d.kualifikasi,1);if(k==='TA'&&ci===2)return o(d.divisi,1);if(k==='TA'&&ci===3)return o(['YA','TIDAK']);
-  if(k==='PARAM'&&ci===0){const fixed=['PPN','PPH','TP_MARKETING','SIGN_FEE','KOMISI','EXPERT_FEE','WAKTU_KONTRAK','KOTA'].includes(v);return fixed?`<b>${esc(v)}</b><input type="hidden" data-r="${ri}" data-c="0" value="${esc(v)}">`:`<input data-r="${ri}" data-c="0" value="${esc(v)}">`}
+  if(k==='PARAM'&&ci===0){const fixed=['PPN','PPH','TP_MARKETING','SIGN_FEE','KOMISI','EXPERT_FEE','EXPERT_FEE_BISNIS','EXPERT_FEE_MAKS','WAKTU_KONTRAK','KOTA'].includes(v);return fixed?`<b>${esc(v)}</b><input type="hidden" data-r="${ri}" data-c="0" value="${esc(v)}">`:`<input data-r="${ri}" data-c="0" value="${esc(v)}">`}
   const t=k==='TARIF'&&ci>0?'number':(k==='USERS'&&ci===0?'email':'text');
   return`<input type="${t}" data-r="${ri}" data-c="${ci}" value="${esc(v)}" aria-label="${esc(d.cols[ci])}">`}
 function mdraw(){const k=M.key,d=M.data;
